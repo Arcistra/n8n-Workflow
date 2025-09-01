@@ -23,4 +23,5 @@ They are built to be **simple, scalable, and cost-effective**, using mostly free
 
 ## 📩 Contact
 If you’d like help customizing workflows or building advanced automations:  
-**[Your Name]** – [Your LinkedIn/Upwork/Gmail link]
+**Mir Faizan ALi** – www.linkedin.com/in/arcistra-tech
+
