@@ -1,0 +1,527 @@
+{
+  "name": "Automated Newsletter Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -368,
+        0
+      ],
+      "id": "0063df11-a2fb-4069-9706-cfa85f584a98",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "25f93e5d-54bf-80f8-89b4-cb84b3394295",
+          "mode": "list",
+          "cachedResultName": "Db_n8n_workflow",
+          "cachedResultUrl": "https://www.notion.so/25f93e5d54bf80f889b4cb84b3394295"
+        },
+        "title": "Database",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "title|title",
+              "title": "={{ $('Code').item.json.title }}"
+            },
+            {
+              "key": "link|url",
+              "urlValue": "={{ $('Code').item.json.link }}"
+            },
+            {
+              "key": "guid|url",
+              "urlValue": "={{ $('Code').item.json.guid }}"
+            },
+            {
+              "key": "content|rich_text",
+              "textContent": "={{ $json.choices[0].message.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        -16
+      ],
+      "id": "47ff244d-20e2-43df-9e95-1ea15cac41e6",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "<Your Notion ID>",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const nodesToCombine = [\n  { name: \"BBC TOP STORIES NEW\", source: \"Top Stories\" },\n  { name: \"BBC World News\", source: \"World News\" },\n  { name: \"BBC Business NEWS\", source: \"Business News\" },\n  { name: \"BBC Technology NEWS\", source: \"Technology News\" },\n  { name: \"BBC Science and Environment NEWS\", source: \"Science & Environment\" },\n  { name: \"BBC Entertainment and Arts NEWS\", source: \"Entertainment & Arts\" },\n];\n\nlet combined = [];\n\n// Loop through each node\nnodesToCombine.forEach(nodeInfo => {\n    const node = $node[nodeInfo.name];\n    // Only proceed if node exists and has items\n    if (node && node.item && node.item.length > 0) {\n        node.item.forEach(item => {\n            // Push a NEW object with only the fields we want\n            combined.push({\n                json: {\n                    title: item.json.title || \"\",\n                    content: item.json.content || \"\",\n                    link: item.json.link || \"\",\n                    guid: item.json.guid || \"\",\n                }\n            });\n        });\n    }\n});\n\n// Deduplicate by GUID\nconst seen = new Set();\nreturn items\n    .map(item => ({\n        json: {\n            title: item.json.title || \"\",\n            content: item.json.content || \"\",\n            link: item.json.link || \"\",\n            guid: item.json.guid || \"\",\n        }\n    }))\n    .filter(item => {\n        if (seen.has(item.json.guid)) return false;\n        seen.add(item.json.guid);\n        return true;\n    });\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        -32
+      ],
+      "id": "ecc2a092-7889-402f-990e-0ba7baa08fb3",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "http://feeds.bbci.co.uk/news/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        -528
+      ],
+      "id": "f37f51e1-3867-4f92-9c12-8fe6175e6192",
+      "name": "BBC TOP STORIES NEW"
+    },
+    {
+      "parameters": {
+        "url": "http://feeds.bbci.co.uk/news/technology/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        48
+      ],
+      "id": "9f9eaa08-14e4-435e-8c04-4ad6d359ba07",
+      "name": "BBC Technology NEWS"
+    },
+    {
+      "parameters": {
+        "url": "http://feeds.bbci.co.uk/news/world/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        -336
+      ],
+      "id": "94b91e68-2477-4a29-993b-f9e04a6caa26",
+      "name": "BBC World News"
+    },
+    {
+      "parameters": {
+        "url": "http://feeds.bbci.co.uk/news/business/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        -144
+      ],
+      "id": "d12083ba-91d0-4eff-b58a-849065727885",
+      "name": "BBC Business NEWS"
+    },
+    {
+      "parameters": {
+        "url": "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        432
+      ],
+      "id": "9c29021e-321d-43e5-bcfe-60cc8cc8908c",
+      "name": "BBC Entertainment and Arts NEWS"
+    },
+    {
+      "parameters": {
+        "url": "http://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        240
+      ],
+      "id": "5294fc8b-0675-4730-857c-88b260b96a16",
+      "name": "BBC Science and Environment NEWS"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        864,
+        -32
+      ],
+      "id": "820ac2cd-f4db-49bc-949b-48554dc59e8c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1184,
+        -16
+      ],
+      "id": "67614577-3f66-4ff6-85a9-86b5e6f643db",
+      "name": "Wait",
+      "webhookId": "5645090e-b031-4da0-b449-c5e65dc7c934"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a professional summarization assistant. \nYou summarize press releases into 3-5 concise, clear bullet points. \nKeep each point under 20 words, use plain language, and focus on key facts.",
+              "role": "system"
+            },
+            {
+              "content": "=Summarize the following press release into 3-5 bullet points and do fact-checking as well.:\n\n{{ $json[\"content\"] }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1488,
+        -16
+      ],
+      "id": "f62cd3ee-e9f9-43db-9c86-25755c664991",
+      "name": "Message a model",
+      "alwaysOutputData": false,
+      "credentials": {
+        "openAiApi": {
+          "id": "<Your Open-Ai ID>",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 1. Schedule Trigger\n📝 “Triggers the workflow at a set interval to fetch the latest news from all BBC RSS feeds.”",
+        "width": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -656,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "28781d8a-172e-41be-a98c-50b0ea725e42",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 2. 6 Different BBC NEWS category\n📝 “Reads BBC Top Stories RSS feed”\n\n📝 “Reads BBC World News RSS feed”\n\n📝 “Reads BBC Business News RSS feed”\n\n📝 “Reads BBC Technology News RSS feed”\n\n📝 “Reads BBC Science & Environment News RSS feed”\n\n📝 “Reads BBC Entertainment & Arts News RSS feed”\n\nand outputs news items...",
+        "height": 320,
+        "width": 448
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        -864
+      ],
+      "typeVersion": 1,
+      "id": "76aa6de0-5785-487f-92a3-0abcb3b1d437",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## 3. Code (JavaScript Node)\n📝 “Combines all RSS feed items, keeps only necessary fields, and removes duplicates by GUID.”",
+        "height": 128,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "8557e202-6561-4d72-8b3f-67559aa904d3",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## 4. Loop Over Items (Split in Batches)\n📝 “Splits combined news items into batches to process sequentially without overloading APIs.”",
+        "width": 448
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        192
+      ],
+      "typeVersion": 1,
+      "id": "b9a93c21-bf9e-436f-8444-214fda8eaccd",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## 5. Wait\n📝 “Waits 20 seconds between each batch to avoid OpenAI or Notion rate limits.”",
+        "height": 128,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1072,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "42302ee5-bcf6-42ad-a30a-2664cb70e366",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## 6. Message a model (OpenAI Node)\n📝 “Sends the news content to GPT-4o-mini for summarization in 3–5 concise bullet points.”",
+        "height": 144,
+        "width": 448
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1392,
+        192
+      ],
+      "typeVersion": 1,
+      "id": "32f86acd-6c60-42bf-9ef6-3a045a49a87e",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## 7. Create a database page (Notion Node)\n📝 “Stores the summarized news content as a new page in the Notion database.”",
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1792,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "e1b0f075-e7d4-418a-8c19-2a63e6f03f4f",
+      "name": "Sticky Note6"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "BBC TOP STORIES NEW",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BBC World News",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BBC Business NEWS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BBC Technology NEWS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BBC Science and Environment NEWS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "BBC Entertainment and Arts NEWS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BBC TOP STORIES NEW": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BBC Technology NEWS": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BBC World News": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BBC Business NEWS": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BBC Entertainment and Arts NEWS": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BBC Science and Environment NEWS": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a database page": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "069dc493-799a-455a-b2b5-1599d8013ec4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a07a309bef02cb42e5d80db4caaea58f7e2becd9054190aa50f3430bb1e5447"
+  },
+  "id": "WvoexqcdJ6uNqDbp",
+  "tags": [
+    {
+      "createdAt": "2025-08-30T15:20:04.238Z",
+      "updatedAt": "2025-08-30T15:20:04.238Z",
+      "id": "SQD5MpQbSERYWb04",
+      "name": "Practice Project"
+    },
+    {
+      "createdAt": "2025-08-30T16:19:24.299Z",
+      "updatedAt": "2025-08-30T16:19:24.299Z",
+      "id": "TJgFeaDLOXX9uv4F",
+      "name": "open AI"
+    },
+    {
+      "name": "Automated Newslater",
+      "id": "eOamcFwRdIpSSYtR",
+      "createdAt": "2025-08-30T21:41:42.618Z",
+      "updatedAt": "2025-08-30T21:41:42.618Z"
+    }
+  ]
+}

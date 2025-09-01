@@ -1,0 +1,279 @@
+{
+  "name": "Email Summerizer",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "18daa85b-7093-4141-9d66-10a0e02c26c0",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ItMPWcUKyCLBVEr7",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1V1BuKYLiRcH8Bks3CmcxMsswALDW5C5FVXCOv3qNDa0",
+          "mode": "list",
+          "cachedResultName": "Email Summerizer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V1BuKYLiRcH8Bks3CmcxMsswALDW5C5FVXCOv3qNDa0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 223830602,
+          "mode": "list",
+          "cachedResultName": "Emails Summary",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V1BuKYLiRcH8Bks3CmcxMsswALDW5C5FVXCOv3qNDa0/edit#gid=223830602"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Gmail Trigger').item.json.id }}",
+            "subject": "={{ $('Gmail Trigger').item.json.headers.subject }}",
+            "text": "={{ $json.message.content }}",
+            "date": "={{ $('Gmail Trigger').item.json.date }}",
+            "from": "={{ $('Gmail Trigger').item.json.headers.from }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        752,
+        0
+      ],
+      "id": "733f9be1-b649-423c-a7fd-d652a0c54970",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RwnISPftDwTELaQn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "you are an expert content writer and psychologist",
+              "role": "system"
+            },
+            {
+              "content": "you will be provided with the email content and you have to summerize the email effiecntly",
+              "role": "assistant"
+            },
+            {
+              "content": "={{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        208,
+        224
+      ],
+      "id": "69f88d33-9890-4682-8bee-c99771b1e68c",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Lq325viMqmcwviYv",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 1️⃣ Gmail Trigger Node\n### Note:\n“Fetch new emails from the Gmail inbox every minute. Only retrieves messages from the INBOX label and downloads attachments. Triggers the workflow whenever a new email arrives.”",
+        "height": 224,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -304,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "bfaaa703-6e64-499b-b748-2d283e2b5d28",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 2️⃣ Message a Model OpenAI Node\n### Note:\n“Summarizes the content of the incoming email using OpenAI GPT-4o-mini. The system prompt frames the AI as an expert content writer and psychologist for effective summarization. Receives raw email text and outputs a concise summary.”",
+        "height": 208,
+        "width": 448
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "3a2383f7-8562-42cb-a600-b974214e9be5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## 3️⃣ Append Row in Google Sheet Node\n### Note:\n“Appends the summarized email data to a Google Sheet. Stores Email ID, From, Subject, Date, and the AI-generated summary. Ensures a running log of all processed emails for review or reporting.”",
+        "height": 224,
+        "width": 448
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        608,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "9ef4c2db-36cb-4a75-bf01-5d4f917af774",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "37954fd1-f499-48e1-95f3-635a2fbbf9fa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a07a309bef02cb42e5d80db4caaea58f7e2becd9054190aa50f3430bb1e5447"
+  },
+  "id": "CBBmesSH3APKRA4h",
+  "tags": [
+    {
+      "name": "Practice Project",
+      "id": "SQD5MpQbSERYWb04",
+      "createdAt": "2025-08-30T15:20:04.238Z",
+      "updatedAt": "2025-08-30T15:20:04.238Z"
+    },
+    {
+      "name": "email summerizer",
+      "id": "Rv81xS1fmqJ1IUBo",
+      "createdAt": "2025-08-30T15:20:12.738Z",
+      "updatedAt": "2025-08-30T15:20:12.738Z"
+    }
+  ]
+}
