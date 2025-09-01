@@ -14,12 +14,12 @@ It’s a simple yet powerful example of combining email automation, AI summariza
   - Subject
   - Date
   - Summary
-  🔒 Credentials are managed via n8n’s built-in credential manager (no keys are stored in the workflow export).
+🔒 Credentials are managed via n8n’s built-in credential manager (no keys are stored in the workflow export).
 
 # 🛠️ Requirements
-  n8n (self-hosted or cloud)
-  A Google account with Gmail + Google Sheets access
-  An OpenAI API key
+  - n8n (self-hosted or cloud)
+  - A Google account with Gmail + Google Sheets access
+  - An OpenAI API key
 
 # 🚀 Setup Instructions
   # Import the Workflow
@@ -39,16 +39,16 @@ It’s a simple yet powerful example of combining email automation, AI summariza
   - Every new email in your Gmail inbox will now be summarized and appended to your Google Sheet.
 
 # 📂 Example Use Cases
-  Quickly scan email inbox summaries without reading full messages.
-  Maintain a running log of important client communications. 
-  Use as a base workflow for more advanced AI-powered email assistants.
+  - Quickly scan email inbox summaries without reading full messages.
+  - Maintain a running log of important client communications. 
+  - Use as a base workflow for more advanced AI-powered email assistants.
 
 # ⚠️ Security Notes
-  No API keys are stored in this repository.
-  The provided .json is sanitized for safe sharing (you must connect your own credentials).
-  Ensure your Google Sheet is private/restricted unless you intend to share it.
+  - No API keys are stored in this repository.
+  - The provided .json is sanitized for safe sharing (you must connect your own credentials).
+  - Ensure your Google Sheet is private/restricted unless you intend to share it.
 
 # 🧑‍💻 Author
-  Created as part of my automation + AI portfolio.
-  If you’d like similar automations built for your business (AI workflows, web automation, or integrations), feel free to connect with me on LinkedIn
+  - Created as part of my automation + AI portfolio.
+  - If you’d like similar automations built for your business (AI workflows, web automation, or integrations), feel free to connect with me on LinkedIn
    or via Upwork.
