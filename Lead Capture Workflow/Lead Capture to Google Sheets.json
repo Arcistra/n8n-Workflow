@@ -1,0 +1,256 @@
+{
+  "name": "Lead Capture to Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d04218e1-5aac-4cb0-b6ee-0caaba2a9737",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "ae97fc21-e179-4497-aeb4-1abafd1d024c",
+      "name": "Webhook",
+      "webhookId": "d04218e1-5aac-4cb0-b6ee-0caaba2a9737"
+    },
+    {
+      "parameters": {
+        "sendTo": "b94899739@gmail.com",
+        "subject": "Lead Capture",
+        "emailType": "text",
+        "message": "=Name:  {{ $json.Name }}\nEmail : {{ $json.Email }}\nPhone Number = {{ $json['Phone number'] }}\nAddress = {{ $json.Address }}\nReviews = {{ $json.Comments }}\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        0
+      ],
+      "id": "5ee5bb13-0ff3-40d1-8984-5f37ad504129",
+      "name": "Send a message",
+      "webhookId": "4df27ef4-16f6-404b-aead-45916d742398",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ItMPWcUKyCLBVEr7",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1F8Kfwqkn5Q84dwgXfTgkOX6ZVsiHcYyld9ZjcX5pa_A",
+          "mode": "list",
+          "cachedResultName": "Lead Capture Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F8Kfwqkn5Q84dwgXfTgkOX6ZVsiHcYyld9ZjcX5pa_A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F8Kfwqkn5Q84dwgXfTgkOX6ZVsiHcYyld9ZjcX5pa_A/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.body.Name }}",
+            "Email": "={{ $json.body.Email }}",
+            "Address": "={{ $json.body.Address }}",
+            "Phone number": "={{ $json.body['Phone Number'] }}",
+            "Comments": "={{ $json.body.Reviews }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone number",
+              "displayName": "Phone number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comments",
+              "displayName": "Comments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        288,
+        0
+      ],
+      "id": "92e31490-01ae-4f27-8a6f-0a90d024f2b6",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RwnISPftDwTELaQn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Webhook Node\n- “📥 Entry point – Google Apps Script (Form Submit trigger) posts data here. Payload contains Name, Email, Address, Phone, Comments.”",
+        "height": 144,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "e31b1c3b-7f61-4e8f-a2dd-e72cb9d41b02",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "\n## Append row in sheet Node\n- 📝 Saves incoming lead data to Google Sheet (Lead Capture Sheet → Sheet1). Mapped JSON fields into sheet columns.”",
+        "height": 144,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        192,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "87f4cb05-fd04-4dd7-ba34-7531e8b909d1",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Send a message Node\n- 📧 Notification step – sends lead details via Gmail to our inbox. Helps the team get instant alerts of new submissions.”",
+        "height": 144,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        640,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "d663dfbe-9331-4e13-878b-674beaf2d0de",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Workflow Overview Note\n-⚡ End-to-end flow: Google Form → Apps Script → Webhook → Save to Sheet → Send Email.\nUseful for lead collection & CRM integration.",
+        "height": 192,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -528,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "26f964bd-3e7c-4ec4-9c2b-d542b30ec2e4",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "55f9c5dd-a2e9-4f41-9c75-6422b00690f2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a07a309bef02cb42e5d80db4caaea58f7e2becd9054190aa50f3430bb1e5447"
+  },
+  "id": "MYcFciNkMQejqnO1",
+  "tags": [
+    {
+      "createdAt": "2025-09-01T14:51:13.631Z",
+      "updatedAt": "2025-09-01T14:51:13.631Z",
+      "id": "Md3Q4cw99OeRoI40",
+      "name": "Google Sheet"
+    },
+    {
+      "createdAt": "2025-08-30T15:20:04.238Z",
+      "updatedAt": "2025-08-30T15:20:04.238Z",
+      "id": "SQD5MpQbSERYWb04",
+      "name": "Practice Project"
+    },
+    {
+      "createdAt": "2025-09-01T14:51:03.889Z",
+      "updatedAt": "2025-09-01T14:51:03.889Z",
+      "id": "zDDqNGa4zxj2GfA3",
+      "name": "Leads"
+    }
+  ]
+}
