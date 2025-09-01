@@ -2,33 +2,35 @@
   This n8n workflow automatically fetches news from multiple BBC RSS feeds, summarizes the content using OpenAI, and saves the results to a Notion    database.
 
 # ✨ Features
-  Automatic news fetching from multiple BBC RSS feeds:
-  - Top Stories
-  - World News
-  - Business News
-  - Technology News
-  - Science & Environment
-  - Entertainment & Arts
-  Content deduplication based on unique GUIDs.
-  Batch processing with delays to prevent API rate limits.
-  Summarization using OpenAI GPT-4o-mini for concise bullet points.
-  Storage in Notion database with title, link, content, and GUID.
 
+- Automatic news fetching from multiple BBC RSS feeds:
+	- Top Stories
+	- World News
+	- Business News
+	- Technology News
+	- Science & Environment
+	- Entertainment & Arts
+  
+- Content deduplication based on unique GUIDs. 
+- Batch processing with delays to prevent API rate limits. 
+- Summarization using OpenAI GPT-4o-mini for concise bullet points. 
+- Storage in Notion database with title, link, content, and GUID. 
 # 🛠 Workflow Overview
 1️⃣ Schedule Trigger
-	-	Purpose: Automatically triggers the workflow at a defined interval. ⏰
-	-	Comment: Triggers the workflow at a set interval to fetch latest news from multiple RSS feeds.
+
+- Purpose: Automatically triggers the workflow at a defined interval. ⏰
+- Comment: Triggers the workflow at a set interval to fetch latest news from multiple RSS feeds.
 
  2️⃣ RSS Feed Nodes
-    - Purpose: Fetch news items from different BBC RSS feeds. 🌐
-      - Feeds:
-        - BBC TOP STORIES NEW
-        - BBC World News
-        - BBC Business NEWS
-        - BBC Technology NEWS
-        - BBC Science and Environment NEWS
-        - BBC Entertainment and Arts NEWS
-   - Comment: Reads the RSS feed for <category>.
+- Purpose: Fetch news items from different BBC RSS feeds. 🌐
+	- Feeds:
+		- BBC TOP STORIES NEW
+		- BBC World News
+		- BBC Business NEWS
+		- BBC Technology NEWS
+		- BBC Science and Environment NEWS
+		- BBC Entertainment and Arts NEWS
+- Comment: Reads the RSS feed for <category>.
 
  3️⃣ Code Node
    - Purpose: Combine all fetched RSS items and remove duplicates. 🔄
