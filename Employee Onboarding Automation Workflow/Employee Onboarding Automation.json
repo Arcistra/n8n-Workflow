@@ -1,0 +1,1182 @@
+{
+  "name": "Employee Onboarding Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Welcome {{ $('Create a Employee Database Page').item.json.name }} to Arcistra Tech",
+        "message": "=Hi {{ $('Create a Employee Database Page').item.json.name }},<br><br> Welcome aboard! Your onboarding details are ready.<br> Here’s your onboarding page:  {{ $('Create a Employee Database Page').item.json.url }}<br><br> Start Date: {{ $('Create a Employee Database Page').item.json.property_joining_date }} <br> Role: {{ $('Create a Employee Database Page').item.json.property_role }} <br> Salary: {{ $('Create a Employee Database Page').item.json.property_salary }} <br><br> — HR Team",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1712,
+        496
+      ],
+      "id": "dd30705e-65f3-4671-bf94-c9522280ef10",
+      "name": "Send a message",
+      "webhookId": "cf894189-0cfc-424c-b868-5d936dcb4b99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ItMPWcUKyCLBVEr7",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o",
+          "mode": "list",
+          "cachedResultName": "Employee Onboarding Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Error",
+            "Notes": "Invalid Email",
+            "Email": "={{ $json.Email }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notion",
+              "displayName": "Notion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "joining Date",
+              "displayName": "joining Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Salary",
+              "displayName": "Salary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Tasks",
+              "displayName": "Tasks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1712,
+        752
+      ],
+      "id": "e2725fc5-b3cc-4306-9fef-814572f97b49",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RwnISPftDwTELaQn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1796aa00-1655-42c0-ab28-b83ca8b5213f",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": "=^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1328,
+        608
+      ],
+      "id": "2ec959e9-e455-43fe-b31e-36c718a82947",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o",
+          "mode": "list",
+          "cachedResultName": "Employee Onboarding Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o/edit#gid=0"
+        },
+        "options": {}
+      },
+      "name": "Employee Trigger",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        144,
+        608
+      ],
+      "id": "93def00a-e40b-4494-9bcc-f0a749936304",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "5zzpN8I5EcOpOEKn",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1232,
+        240
+      ],
+      "id": "8eb9fcca-912a-4cd1-ab12-e2b4b6f87b4a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.url }}",
+          "mode": "url"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "to_do",
+              "textContent": "={{ $json.Task }}"
+            },
+            {
+              "type": "bulleted_list_item",
+              "textContent": "={{ $json['Task Details'] }}"
+            },
+            {
+              "textContent": "=Due Date : {{ $json['Due Date'] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        256
+      ],
+      "id": "9b7a3216-29eb-4dc0-8a87-3e7608437418",
+      "name": "Append a block",
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "credentials": {
+        "notionApi": {
+          "id": "SIx6TRiasxOk3zg1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Check }}",
+                    "rightValue": "=yes",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "d8dadebe-0558-463f-81d7-16693838fa02"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        480,
+        240
+      ],
+      "id": "66bcc8c8-2284-44af-b9bf-c29835283c31",
+      "name": "Switch",
+      "notesInFlow": false,
+      "notes": "\n"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "11NamG_3W8SigspkPm1lW-2NYyUTng_vY-eC3LX-dfLE",
+          "mode": "list",
+          "cachedResultName": "onboarding tasks",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11NamG_3W8SigspkPm1lW-2NYyUTng_vY-eC3LX-dfLE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11NamG_3W8SigspkPm1lW-2NYyUTng_vY-eC3LX-dfLE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        176,
+        240
+      ],
+      "id": "0172e55f-8af4-436c-8dd6-39ee456e2800",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "5zzpN8I5EcOpOEKn",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Check }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "e6d66e18-a21a-4cf1-b4a5-fbe429d21c6e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        480,
+        608
+      ],
+      "id": "cb1e8f2d-f739-47e2-adeb-75fdb8b1c51c",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "11NamG_3W8SigspkPm1lW-2NYyUTng_vY-eC3LX-dfLE",
+          "mode": "list",
+          "cachedResultName": "onboarding tasks",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11NamG_3W8SigspkPm1lW-2NYyUTng_vY-eC3LX-dfLE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Loop Over Items').item.json.property_email }}",
+            "Check": "={{null}}",
+            "id": "={{ $('Set Node').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task Details",
+              "displayName": "Task Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Check",
+              "displayName": "Check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1808,
+        256
+      ],
+      "id": "38cb61e2-5461-4944-89b2-177f441226e4",
+      "name": "Update_check_Task",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RwnISPftDwTELaQn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "26293e5d-54bf-80e1-b0e3-ca3340cf7007",
+          "mode": "list",
+          "cachedResultName": "Employee Onboarding",
+          "cachedResultUrl": "https://www.notion.so/26293e5d54bf80e1b0e3ca3340cf7007"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Email|email",
+              "condition": "equals",
+              "emailValue": "={{ $json.Email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        736,
+        240
+      ],
+      "id": "f6c2eea1-a91d-4303-963e-7b6e072faa09",
+      "name": "Get many database pages",
+      "retryOnFail": true,
+      "credentials": {
+        "notionApi": {
+          "id": "SIx6TRiasxOk3zg1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### ✅ Employee Trigger starts when HR updates Employee Sheet",
+        "height": 228,
+        "width": 280,
+        "color": 4
+      },
+      "id": "32df1384-f691-4a35-ac78-7291435f7077",
+      "name": "Sticky Note 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        48,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### ➡️ Switch checks 'Check' column before Getting Notion Databases ",
+        "height": 244,
+        "width": 504,
+        "color": 5
+      },
+      "id": "8d8233e1-6330-443f-be78-5edec727ed8d",
+      "name": "Sticky Note 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        416,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### 📩 After page created → Email sent + Sheet updated",
+        "height": 116,
+        "width": 264
+      },
+      "id": "8525b00d-9d23-4546-b68a-af9014cd43c3",
+      "name": "Sticky Note 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1632,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### ✅ Tasks Trigger starts when new row added in Tasks Sheet",
+        "height": 228,
+        "width": 264,
+        "color": 4
+      },
+      "id": "eaee377d-eb4a-479b-ad7a-3d1e71c29325",
+      "name": "Sticky Note 4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### 🔁 Loop over tasks → append them one by one to Notion",
+        "height": 244,
+        "width": 376
+      },
+      "id": "e4ca52c8-a882-46c6-8518-986c3eb79718",
+      "name": "Sticky Note 5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### ✔️ Each task marked processed → Google Sheet updated",
+        "height": 244,
+        "width": 248
+      },
+      "id": "de78da50-ce14-46a9-8578-614bb1d30dad",
+      "name": "Sticky Note 6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1728,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### ➡️ iF-ELSE WILL VALIDATE eMAIL address bEFORE sENDING Email",
+        "height": 240,
+        "width": 256,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1248,
+        512
+      ],
+      "typeVersion": 1,
+      "id": "08b696f8-f6c4-490f-9d1a-c8e1e92643a3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "### ➡️ Switch checks 'Check' column before creating Employee Database page and than notion node will create Employee database page for each row that get pass through the switch",
+        "height": 260,
+        "width": 568,
+        "color": 5
+      },
+      "id": "dca6f350-6439-455b-a64f-56f5e2221319",
+      "name": "Sticky Note ",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        416,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bbd7e4da-d7a6-427b-be98-e537a393e558",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "1d4c70ef-697a-4ff1-b082-712b8c3f9a2a",
+              "name": "property_email",
+              "value": "={{ $json.property_email }}",
+              "type": "string"
+            },
+            {
+              "id": "81693858-0e7e-421a-9dda-9c3d30fc4e75",
+              "name": "Task",
+              "value": "={{ $('Switch').item.json.Task }}",
+              "type": "string"
+            },
+            {
+              "id": "ca0544b3-4a54-4488-84ae-338502ee44c6",
+              "name": "Due Date",
+              "value": "={{ $('Switch').item.json['Due Date'] }}",
+              "type": "string"
+            },
+            {
+              "id": "64797933-8a7f-43b5-9842-ca0c2a467822",
+              "name": "Task Details",
+              "value": "={{ $('Switch').item.json['Task Details'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8d9f9a0b-ba0c-4ba1-92cd-e7a9b0fc2b5d",
+              "name": "Check",
+              "value": "={{ $('Switch').item.json.Check }}",
+              "type": "string"
+            },
+            {
+              "id": "7fad0af2-6f88-4d09-a5f3-a78b4cf19ca9",
+              "name": "id",
+              "value": "={{ $('Google Sheets Trigger').item.json.id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        240
+      ],
+      "id": "de235906-df1b-48ae-b695-1da8131d9b0a",
+      "name": "Set Node"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o",
+          "mode": "list",
+          "cachedResultName": "Employee Onboarding Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MZeXub2TLIgkuw8I-jvKhC0OXIukaa9W5M4bdD8gA_o/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Employee Trigger').item.json.Email }}",
+            "Notion": "={{ $('Create a Employee Database Page').item.json.url }}",
+            "Check": "={{null}}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notion",
+              "displayName": "Notion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "joining Date",
+              "displayName": "joining Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Salary",
+              "displayName": "Salary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Check",
+              "displayName": "Check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1072,
+        608
+      ],
+      "id": "b854901b-15ad-499b-88a8-d038c76d2baf",
+      "name": "Update_check_Employee",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RwnISPftDwTELaQn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "26293e5d-54bf-80e1-b0e3-ca3340cf7007",
+          "mode": "list",
+          "cachedResultName": "Employee Onboarding",
+          "cachedResultUrl": "https://www.notion.so/26293e5d54bf80e1b0e3ca3340cf7007"
+        },
+        "title": "Employee",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Name|title",
+              "title": "={{ $json.Name }}"
+            },
+            {
+              "key": "Email|email",
+              "emailValue": "={{ $json.Email }}"
+            },
+            {
+              "key": "Joining Date|rich_text",
+              "textContent": "={{ $json['joining Date'] }}"
+            },
+            {
+              "key": "Role|rich_text",
+              "textContent": "={{ $json.Role }}"
+            },
+            {
+              "key": "Salary|rich_text",
+              "textContent": "={{ $json.Salary }}"
+            },
+            {
+              "key": "Notes|rich_text",
+              "textContent": "={{ $json.Notes }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        608
+      ],
+      "id": "db9f2674-123e-4807-84d2-3c42c6aa9100",
+      "name": "Create a Employee Database Page",
+      "retryOnFail": true,
+      "credentials": {
+        "notionApi": {
+          "id": "SIx6TRiasxOk3zg1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        320
+      ],
+      "id": "222ea809-5cc6-4fa2-b319-534f1fa8252c",
+      "name": "Error Trigger",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "### ⚠️ **Workflow Error Trigger** Catches ANY node failure in this workflow\\n- Automatically starts error flow (no connections needed)\\n- Use this branch to:\\n   • Send email notification with error details\\n   • Log error in Google Sheets/Notion\\n   • Retry or alert manually\"",
+        "height": 288,
+        "width": 416,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "3bb8671b-0a09-43ab-9d6f-21e66beb89f3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "##  ⚠️ **Error Data Available in Workflow Error Trigger** \n\n### {{$json.workflow.name}} → Workflow Name • {{$json.execution.id}} → Execution ID • {{$json.execution.url}} → Link to execution • {{$json.error.message}} → Error message • {{$json.error.stack}} → Stack trace • {{$json.error.node.name}} → Failed Node\"\n  ",
+        "height": 288,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        464
+      ],
+      "typeVersion": 1,
+      "id": "923c1f3e-1de2-45fa-baec-ceaddbd0449b",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Employee Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Append a block",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append a block": {
+      "main": [
+        [
+          {
+            "node": "Update_check_Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Get many database pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Create a Employee Database Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Update_check_Task": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many database pages": {
+      "main": [
+        [
+          {
+            "node": "Set Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Node": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_check_Employee": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a Employee Database Page": {
+      "main": [
+        [
+          {
+            "node": "Update_check_Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1,
+    "errorWorkflow": "Q3z0pGRQMhaOEfZn"
+  },
+  "versionId": "a66c78ea-c5f8-45a7-83b6-795c0a85bd09",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a07a309bef02cb42e5d80db4caaea58f7e2becd9054190aa50f3430bb1e5447"
+  },
+  "id": "Q3z0pGRQMhaOEfZn",
+  "tags": [
+    {
+      "createdAt": "2025-09-02T00:12:31.799Z",
+      "updatedAt": "2025-09-02T00:12:31.799Z",
+      "id": "0nOl9X60iFsd8xCa",
+      "name": "SLACK"
+    },
+    {
+      "createdAt": "2025-09-01T14:51:13.631Z",
+      "updatedAt": "2025-09-01T14:51:13.631Z",
+      "id": "Md3Q4cw99OeRoI40",
+      "name": "Google Sheet"
+    },
+    {
+      "createdAt": "2025-08-30T15:20:12.738Z",
+      "updatedAt": "2025-08-30T15:20:12.738Z",
+      "id": "Rv81xS1fmqJ1IUBo",
+      "name": "email summerizer"
+    },
+    {
+      "createdAt": "2025-08-30T15:20:04.238Z",
+      "updatedAt": "2025-08-30T15:20:04.238Z",
+      "id": "SQD5MpQbSERYWb04",
+      "name": "Practice Project"
+    }
+  ]
+}
