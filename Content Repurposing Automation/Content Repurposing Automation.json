@@ -1,0 +1,360 @@
+{
+  "name": "Content Repurposing Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "feedUrl": "https://medium.com/feed/blog"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        16
+      ],
+      "id": "8baf5386-4617-4c26-a021-685fa1b1a628",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nlet content = [];\n\nfor (const item of $input.all()) {\n  content.push({\n    title: item.json.title,\n    link: item.json.link,\n    snippet: item.json['content:encodedSnippet']\n  });\n}\n\nreturn content;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        16
+      ],
+      "id": "3339d525-f45c-4cac-803b-03e74b562abf",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4f47c980-7e7a-4e7e-ad18-b9cb868b4bbb",
+              "name": "title",
+              "value": "={{ $('Code').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "c3d8d198-6280-405f-83b0-b0df8824bc7e",
+              "name": "link",
+              "value": "={{ $('Code').item.json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "351b3fc0-a80d-45a8-bffb-37b84f23172d",
+              "name": "message.content",
+              "value": "={{ $json.message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        16
+      ],
+      "id": "55e085ca-b8af-4afa-9162-6af4a9a7ac67",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.message.content }}",
+        "name": "={{ $json.title }} - Social Snippet",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1Igo-eelxWyW-iUW-mvABGjsNSkvxrxc_",
+          "mode": "list",
+          "cachedResultName": "n8n Workflows",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1Igo-eelxWyW-iUW-mvABGjsNSkvxrxc_"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        736,
+        16
+      ],
+      "id": "51f84a49-0d8d-48d3-ba76-d8c679cc5a90",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "yC7QcteTFOhHXPxB",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U09DEA75DQR",
+          "mode": "list",
+          "cachedResultName": "b94899739"
+        },
+        "text": "={{$node[\"Edit Fields\"].json[\"title\"]}} -- Blog is extracted and Document for multi-Social platform Posts are generated",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1072,
+        16
+      ],
+      "id": "948eb527-6aae-4c5c-91da-ddf6ad78769c",
+      "name": "Send a message",
+      "webhookId": "6e655a01-3164-473d-b79f-72238497e35d",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "7YArECciPxd4Y3Qf",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### “🚀 Triggers workflow when a new blog post appears on Medium.”",
+        "height": 288,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -544,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "de335c80-6571-4448-a9b3-000d925d3dc4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "### “🛠 Extracts blog title, link, and snippet for downstream processing.”",
+        "height": 240,
+        "width": 224,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -256,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "4bd3d6c7-be14-400d-bafe-a6910f4a72fa",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "### “🤖 Generates multi-platform social snippets from blog content using OpenAI.”",
+        "height": 240,
+        "width": 288,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "f9fce06a-a17c-4a80-94a8-426e363229bc",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "### \"✏️ Organizes data fields for Google Docs creation and Slack notification.”",
+        "height": 240,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "08d56302-06b1-45b2-a9a4-6c507bb5fe3c",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "### “📄 Stores the generated multi-platform snippets in Google Drive as a new Doc.”",
+        "height": 240,
+        "width": 256,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        656,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "fee38f69-a845-4259-af0c-69f0f9f0e3e7",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "### “📣 Sends Slack notification to the team with blog title and workflow completion.”",
+        "height": 256,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        976,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "0e4f4bd7-5e0f-47b7-b45e-7a1e129abf76",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Convert this blog post into social snippets:\n- LinkedIn: 150–300 words, professional\n- Twitter: 3–5 tweets, 280 chars each\n- Instagram: fun caption + 3 hashtags + 3 emojis\n- TikTok/YouTube Shorts: 20–30 sec video script\n\nBlog Title: {{$json[\"title\"]}}\nContent: {{$json[\"snippet\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        48,
+        16
+      ],
+      "id": "330de999-6c56-4d57-b10d-36b2434e39c6",
+      "name": "Model for Multi-Platform Post",
+      "credentials": {
+        "openAiApi": {
+          "id": "Lq325viMqmcwviYv",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Model for Multi-Platform Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create file from text": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Model for Multi-Platform Post": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b854e40f-be94-4ae9-811b-1aa51b0c2571",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a07a309bef02cb42e5d80db4caaea58f7e2becd9054190aa50f3430bb1e5447"
+  },
+  "id": "SqWgMqRBMUToTbCg",
+  "tags": [
+    {
+      "createdAt": "2025-09-02T00:12:31.799Z",
+      "updatedAt": "2025-09-02T00:12:31.799Z",
+      "id": "0nOl9X60iFsd8xCa",
+      "name": "SLACK"
+    },
+    {
+      "createdAt": "2025-08-30T15:20:04.238Z",
+      "updatedAt": "2025-08-30T15:20:04.238Z",
+      "id": "SQD5MpQbSERYWb04",
+      "name": "Practice Project"
+    },
+    {
+      "createdAt": "2025-08-30T16:19:24.299Z",
+      "updatedAt": "2025-08-30T16:19:24.299Z",
+      "id": "TJgFeaDLOXX9uv4F",
+      "name": "open AI"
+    },
+    {
+      "createdAt": "2025-08-30T21:41:42.618Z",
+      "updatedAt": "2025-09-05T23:21:55.176Z",
+      "id": "eOamcFwRdIpSSYtR",
+      "name": "Automated Newsletter"
+    }
+  ]
+}
