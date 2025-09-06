@@ -88,11 +88,6 @@ Delay node ensures OpenAI’s API rate limits are not exceeded.
 - Database IDs and workflow node IDs are not sensitive but keep credentials safe.
 - Always use .env or n8n’s credential management for API keys. 🔑
 
-📈 Workflow Diagram
-
-
-<img width="1662" height="737" alt="image" src="https://github.com/user-attachments/assets/9cd7659f-834f-4317-94a5-38d91ccb1a0f" />
-
 # 💡 Future Improvements
 -	Add more RSS sources or custom sources.
 -	Enable multilingual summaries. 🌎
