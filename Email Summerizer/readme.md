@@ -50,5 +50,4 @@ It’s a simple yet powerful example of combining email automation, AI summariza
 
 # 🧑‍💻 Author
   - Created as part of my automation + AI portfolio.
-  - If you’d like similar automations built for your business (AI workflows, web automation, or integrations), feel free to connect with me on LinkedIn
-   or via Upwork.
+  - If you’d like similar automations built for your business (AI workflows, web automation, or integrations), feel free to connect with me on LinkedIn.
