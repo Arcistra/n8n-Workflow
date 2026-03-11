@@ -1,0 +1,562 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "feedUrl": "https://medium.com/feed/blog"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        176
+      ],
+      "id": "19910dc8-18e0-4cae-9f3c-2a352c8e91ba",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Act as a professional content writer.\n\nYour task is to generate social media posts for **two platforms: Twitter/X and LinkedIn** based on the following article.\n\nTitle: {{ $json.title }}\n\nContent: {{ $json.Content }}\n\nRequirements:\n\n1. Each post must summarize the article using **4–5 key points**.\n\n2. The posts must be **short, clear, and engaging**.\n\n3. Each platform must include **exactly one image prompt** related to the content.\n\n4. The tone should be professional and suitable for social media.\n\n5. Do **not add any explanation or extra text outside the required format**.\n\nStrict Output Format (follow exactly):\n\nTwitter/x Post:\n\n\"Write the Twitter/X post here summarizing the article in 4–5 short points.\"\n\n## image Prompt:\n\n\"A detailed image generation prompt related to the Twitter/X post.\"\n\n###\n\nLinkedIn Post:\n\n\"Write the LinkedIn post here summarizing the article in 4–5 clear points with a professional tone.\"\n\n## image Prompt:\n\n\"A detailed image generation prompt suitable for LinkedIn.\"\n\nReturn the response strictly in JSON format.\n\n{\n\n \"twitter\": {\n\n   \"post\": \"text here\",\n\n   \"image_prompt\": \"prompt here\"\n\n },\n\n \"linkedin\": {\n\n   \"post\": \"text here\",\n\n   \"image_prompt\": \"prompt here\"\n\n }\n\n}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_object"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        176
+      ],
+      "id": "61b4bf7c-2f52-4bb4-8932-e4b59be34aed",
+      "name": "Generate Post Content",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "5XsbZQtP0E4Yb3xA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "\ndata = []\nfor item in _items:\n  d = {\"title\":item[\"json\"][\"title\"],\n  \"link\":item[\"json\"][\"link\"],\n  \"Content\":item[\"json\"]['content:encodedSnippet']}\n  data.append(d)\nreturn data"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        176
+      ],
+      "id": "219a810f-974d-4a16-8a1d-350dc7ed61fc",
+      "name": "code for python",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "REPLACE_WITH_YOUR_IMGBB_KEY"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "={{ $json.fileName }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        608,
+        688
+      ],
+      "id": "f46fd0d3-0239-431d-8ccf-40c1a1cfb75d",
+      "name": "HTTP Request To IMGBB",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        560,
+        432
+      ],
+      "id": "88d251af-4c27-4177-b82d-b966af426920",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "={{ $json.Prompt }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        832,
+        448
+      ],
+      "id": "c86e82ea-abad-48ea-b42b-58bf43f245f6",
+      "name": "Generate an image",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "5XsbZQtP0E4Yb3xA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        816
+      ],
+      "id": "1248478c-ce2c-425e-b910-ccf527c86a34",
+      "name": "Wait",
+      "webhookId": "32a526b8-fd96-4391-bcc2-9ac1e18dd36e"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "\nPrompt = []\nfor item in _items:\n  Twitter_Prompt = item[\"json\"][\"Twitter_prompt\"]\n  LinkedIn_Prompt = item[\"json\"][\"Linkedin_Prompt\"]\n\n  \n  Prompt.append({\"Prompt\": Twitter_Prompt, \"Platform\": \"Twitter\"})\n  Prompt.append({\"Prompt\": LinkedIn_Prompt, \"Platform\": \"Linkedin\"})\n  \nreturn Prompt"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        176
+      ],
+      "id": "61577097-1fa4-49a2-9b36-7886daa57ae3",
+      "name": "Spliting Prompt Dict"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8fcfc55d-153f-44eb-8756-cc7bd9b03942",
+              "leftValue": "={{ $json.Platform }}",
+              "rightValue": "=Twitter",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1072,
+        688
+      ],
+      "id": "b84508e7-d5ed-4e3a-995d-975edbf7dc79",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a582d8a4-e54c-4a2b-8f07-2d480592a36f",
+              "name": "title",
+              "value": "={{ $('code for python').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "11860423-89db-4ea8-b0f8-9758d979a2e5",
+              "name": "link",
+              "value": "={{ $('code for python').item.json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "114c8d88-c800-40a1-813c-56fb82611295",
+              "name": "Twitter_Post",
+              "value": "={{ $json.output[0].content[0].text.twitter.post }}",
+              "type": "string"
+            },
+            {
+              "id": "6d50ceb2-f1e1-40b6-8d99-19e383093f94",
+              "name": "Twitter_prompt",
+              "value": "={{ $json.output[0].content[0].text.twitter.image_prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "80745151-4f44-4d50-9ab3-9d7724e94478",
+              "name": "Linkedin_Post",
+              "value": "={{ $json.output[0].content[0].text.linkedin.post }}",
+              "type": "string"
+            },
+            {
+              "id": "43b25b3d-4fe2-43a4-b128-54866a0bb4df",
+              "name": "Linkedin_Prompt",
+              "value": "={{ $json.output[0].content[0].text.linkedin.image_prompt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        176
+      ],
+      "id": "fcb2fd64-73f1-4eea-945c-b43f0c0d5e48",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        544
+      ],
+      "id": "e2e0b150-bcdf-46b4-be54-49bc2d28ab31",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "sendTo": "Enter the Gmail address of the recipient",
+        "subject": "=⚠️ Workflow Alert: {{ $json.workflow.name }} (Execution: {{ $json.execution.id }}) ",
+        "emailType": "text",
+        "message": "=Automation Error Report\n\nWorkflow: {{ $workflow.name }}\nStatus: Failed at node {{ $json.execution.lastNodeExecuted }}\n\nError Message:\n{{ $json.execution.error.message }}\n\nTechnical Details:\n\nExecution ID: {{ $execution.id }}\n\nTimestamp: {{ $now }}\n\nAction Required:\nPlease review the execution logs here:\n{{ $json.execution.url }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        544
+      ],
+      "id": "9cb03229-b23d-49fd-9543-b257786f2ed4",
+      "name": "Send a message",
+      "webhookId": "5d87076a-9232-4de2-a17b-26051473a8c6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "crujJiT5zC2RvpKH",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "platform": "twitter",
+        "accountId": {
+          "__rl": true,
+          "value": "=",
+          "mode": "id"
+        },
+        "postContentText": "={{ $('Edit Fields').item.json.Twitter_Post }}",
+        "postContentMediaUrls": "={{ $json.data.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        1424,
+        528
+      ],
+      "id": "53fb2f6d-720f-4956-95d7-970be4eb7514",
+      "name": "Blotato - Twitter",
+      "retryOnFail": false,
+      "credentials": {
+        "blotatoApi": {
+          "id": "XixexStKRQoShaaC",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "platform": "linkedin",
+        "accountId": {
+          "__rl": true,
+          "value": "=",
+          "mode": "id"
+        },
+        "postContentText": "={{ $('Edit Fields').item.json.Linkedin_Post }}",
+        "postContentMediaUrls": "={{ $json.data.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        816
+      ],
+      "id": "47e128fc-23a7-4bf1-bb6d-5716b47ce603",
+      "name": "Blotato - Linkedin",
+      "credentials": {
+        "blotatoApi": {
+          "id": "8eyX8A2P6Sx47Vd8",
+          "name": "Blotato account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f59e7f48-a8f5-4e30-8875-eb204c0ff84c",
+              "name": "data.url",
+              "value": "={{ $json.data.url }}",
+              "type": "string"
+            },
+            {
+              "id": "2fad236a-2950-4890-879e-161dd2d4dc47",
+              "name": "Platform",
+              "value": "={{ $('Loop Over Items').item.json.Platform }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        688
+      ],
+      "id": "c26b9787-cbe1-433d-9416-c4b91a009f6b",
+      "name": "Merge URL and Platform Field"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "code for python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Post Content": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "code for python": {
+      "main": [
+        [
+          {
+            "node": "Generate Post Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request To IMGBB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request To IMGBB": {
+      "main": [
+        [
+          {
+            "node": "Merge URL and Platform Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spliting Prompt Dict": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Blotato - Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Blotato - Linkedin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Spliting Prompt Dict",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blotato - Twitter": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blotato - Linkedin": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge URL and Platform Field": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4aa8e0e1-a3ca-4feb-8051-828ae048017e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e5dd9dae3e270bdd695016f013d30a9ef6b485d13c6ea778797d96c3f3eb129e"
+  },
+  "id": "VRoY0eWivMqx8O0B",
+  "tags": []
+}
